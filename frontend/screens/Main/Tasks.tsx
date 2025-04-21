@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { format, addDays, addWeeks, addMonths, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
-import { ptBR } from 'date-fns/locale'; // For Portuguese formatting
+import { ptBR } from 'date-fns/locale';
+import { useAuth } from '@/services/auth/AuthContext';
 
 const TasksContent = () => {
+  const { user } = useAuth();
   // Seletor de visão
   const [viewMode, setViewMode] = useState('day'); // 'dia', 'semana', 'mes'
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -161,7 +163,7 @@ const TasksContent = () => {
         </View>
       </View>
 
-      {/* Cabecalho da tabela*/}
+      {/* Cabecalho da tabela */}
       <View style={styles.tableHeader}>
         <Text style={[styles.headerText, { flex: 2 }]}>Tarefa</Text>
         <Text style={styles.headerText}>Pontos</Text>
@@ -185,7 +187,7 @@ const TasksContent = () => {
               </Text> : null }
               <TouchableOpacity 
                 style={styles.checkbox} 
-                // onPress={() => toggleTaskCompletion(item.id)}
+                // onPress={() => {toggleTaskCompletion(item.id)}}
                 onPress={() => {}}
                 disabled
               >

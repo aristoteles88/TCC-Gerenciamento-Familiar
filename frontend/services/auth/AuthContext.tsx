@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      setUser(firebaseUser ? { uid: firebaseUser.uid, email: firebaseUser.email } : null);
+      setUser(firebaseUser ? { uid: firebaseUser.uid, email: firebaseUser.email } : null); // TODO obter dados do usuário via api.
       setLoading(false);
     });
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth deve ser utilizado dentro de um AuthProvider');
   }
   return context;
 };

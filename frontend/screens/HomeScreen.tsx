@@ -160,14 +160,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
-  // content: {
-  //   flex: 1,
-  // },
-  // contentTitle: {
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  //   marginBottom: 20,
-  // },
 });
 
 export default HomeScreen;

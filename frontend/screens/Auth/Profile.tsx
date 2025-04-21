@@ -1,12 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { useAuth } from "@/services/auth/AuthContext";
 
-const ProfileContent = () => (
-  <View style={styles.content}>
+const ProfileContent = () => {
+  const { user } = useAuth();
+
+  return <View style={styles.content}>
     <Text style={styles.contentTitle}>Profile Page</Text>
-    {/* Your tasks content here */}
+    <Text> { user?.email } </Text>
   </View>
-);
+};
 
 const styles = StyleSheet.create({
   mainContent: {
