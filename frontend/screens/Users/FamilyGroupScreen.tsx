@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } 
 import { Divider } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from 'expo-router';
 
 
 const FamilyGroupScreen = () => {
   const [familyName, setFamilyName] = useState('')
   const [showIcon, setShowIcon] = useState(true)
+  const navigation = useNavigation();
 
   // Dados mockados
   const header = ["Nome", "E-mail", "Idade", "Administrador", "Perfil", ""];
@@ -117,7 +119,10 @@ const FamilyGroupScreen = () => {
         <TouchableOpacity style={styles.buttonBorder}>
           <Text style={[styles.buttonText, styles.cancelButtonText]}>Cancelar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonBorder}>
+        <TouchableOpacity 
+          style={styles.buttonBorder}
+          onPress={() => navigation.navigate('Home')}
+        >
           <Text style={[styles.buttonText, styles.saveButtonText]}>Salvar</Text>
         </TouchableOpacity>
       </View>
