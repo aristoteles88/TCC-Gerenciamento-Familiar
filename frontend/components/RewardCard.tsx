@@ -32,7 +32,7 @@ const UserCard = ({userId, title, points}) => {
                 size={20} 
                 color={"#006300"} 
                 />
-                <Text style={styles.text}>{5} Tarefas concluídas em 'mês'</Text>
+                <Text style={styles.text}>{5} Tarefas concluídas esse mês</Text>
             </View>
             
             {/* linha da segunda informacao */}
