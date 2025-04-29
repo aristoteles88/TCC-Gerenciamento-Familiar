@@ -1,13 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useAuth } from "@/services/auth/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import LogoutButton from "@/components/LogoutButton";
 
 const ProfileContent = () => {
   const { user } = useAuth();
+  const navigation = useNavigation();
 
   return <View style={styles.content}>
     <Text style={styles.contentTitle}>Profile Page</Text>
     <Text> { user?.email } </Text>
+    <LogoutButton navigation={navigation}/>
   </View>
 };
 

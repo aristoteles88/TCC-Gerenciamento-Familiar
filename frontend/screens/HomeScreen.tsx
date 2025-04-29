@@ -5,8 +5,10 @@ import TasksContent from './Main/Tasks';
 import RewardsContent from './Main/Rewards';
 import SettingsContent from './Main/Settings';
 import ProfileContent from './Auth/Profile';
+import LogoutButton from '@/components/LogoutButton';
 
-const HomeScreen = () => {
+
+const HomeScreen = ({navigation}) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeContent, setActiveContent] = useState('tasks'); // 'tasks', 'rewards', 'settings', 'profile'
 
@@ -84,14 +86,12 @@ const HomeScreen = () => {
           <Text style={styles.navbarTitle}>Make it Better</Text>
           <View style={styles.navbarButtons}>
             <TouchableOpacity 
-              style={styles.navbarButton} 
+              style={styles.navbarButton}
               onPress={() => setActiveContent('profile')}
             >
               <Ionicons name="person" size={24} color="#6C63FF" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.navbarButton}>
-              <Ionicons name="log-out" size={24} color="#6C63FF" />
-            </TouchableOpacity>
+            <LogoutButton navigation={navigation}/>
           </View>
         </View>
 

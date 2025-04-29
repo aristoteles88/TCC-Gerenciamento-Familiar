@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { Alert } from '@/components/Alert';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { useAuth } from '../../services/auth/AuthContext';
-import { useNavigation } from 'expo-router';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login, loading } = useAuth();
-    const navigation = useNavigation();
 
     const webClientId = "343002635950-2qjmdgaml08o5pbao3uf645fum6vq4lr.apps.googleusercontent.com"; 
 
@@ -20,34 +18,16 @@ const LoginScreen = () => {
         })
     },[])
 
-    const googleLogin = async () => {
+    const handleLogin = async (type, email, password, navigation) => {
         try {
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            console.log("userinfo", userInfo);
-
-        } catch (error) {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                console.log(error)
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-                console.log(error)
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                console.log(error)
-            } else {
-            }
-        }
-      };
-
-    const handleLogin = async () => {
-        try {
-            await login(email, password);
+            await login(type, email, password, navigation);
         } catch (error: any) {
             Alert.alert('Erro ao fazer o login: ', error.message);
         }
     };
 
   return (
-    <SafeAreaView
+    <ScrollView
       style={styles.background}>
       <View style={styles.container}>
         <Image
@@ -86,14 +66,15 @@ const LoginScreen = () => {
 
             <TouchableOpacity 
                 style={styles.loginButton}
-                onPress={handleLogin}
-                disabled={loading}
+                onPress={() => handleLogin('email', email, password, navigation)}
             >
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={googleLogin}>
+          <TouchableOpacity 
+            onPress={() => handleLogin('google', email, password, navigation)}
+          >
               <Image
                   source={require('@/assets/images/web_light_sq_SI1x.png')}
                   style={styles.googleButton}
@@ -110,7 +91,7 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 

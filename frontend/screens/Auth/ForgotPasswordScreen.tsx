@@ -8,7 +8,7 @@ const ForgotPasswordScreen = () => {
   const { resetPassword, loading } = useAuth();
   const navigation = useNavigation();
 
-  const handleResetPassword = async () => {
+  const handleResetPassword = async ({navigation}) => {
     try {
       await resetPassword(email);
       Alert.alert('Success', 'Password reset email sent. Please check your inbox.');

@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert } from '@/components/Alert';
 import { useAuth } from '../../services/auth/AuthContext';
-import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const { register, loading } = useAuth();
-  const navigation = useNavigation();
 
   const handleRegister = async () => {
 
     try {
-      await register(email, password);
+      const fullName = `${firstName} ${lastName}`;
+      await register(email, password, fullName, navigation);
     } catch (error: any) {
       Alert.alert('Registration Error', error.message);
     }
@@ -63,15 +63,16 @@ const RegisterScreen = () => {
                 />
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity 
-                        style={styles.cancelButton}
+                        style={[styles.button, styles.cancelButton]}
                         onPress={() => navigation.navigate('Login')}
-                        disabled={loading}
                     >
                         <Text style={styles.buttonText}>Cancelar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
-                        style={styles.registerButton}
-                        onPress={() => navigation.navigate('Register')}
+                        style={[styles.button, styles.registerButton]}
+                        onPress={() => {
+                            handleRegister();
+                        }}
                     >
                         <Text style={styles.buttonText}>Registrar</Text>
                     </TouchableOpacity>
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '100%',
+        // width: '100%',
         maxWidth: 400,
         backgroundColor: 'D9D9D9',
         borderRadius: 20,
@@ -140,8 +141,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         backgroundColor: '#f9f9f9',
     },
-    registerButton: {
-        backgroundColor: 'blue',
+    button: {
         borderRadius: 10,
         width: 100,
         height: 50,
@@ -149,25 +149,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
     },
+    registerButton: {
+        backgroundColor: 'blue',
+    },
     cancelButton: {
         backgroundColor: '#5A5A5A',
-        borderRadius: 10,
-        width: 100,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 10,
     },
     buttonText: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
-    },
-    loginButton: {
-        color: '#6C63FF',
-        textAlign: 'center',
-        marginTop: 15,
-        fontSize: 14,
     },
 });
 

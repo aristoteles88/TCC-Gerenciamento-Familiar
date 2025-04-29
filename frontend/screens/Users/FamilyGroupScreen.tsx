@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
+import api from '@/api/client';
 
 
-const FamilyGroupScreen = () => {
+
+const FamilyGroupScreen = async () => {
   const [familyName, setFamilyName] = useState('')
   const [showIcon, setShowIcon] = useState(true)
   const navigation = useNavigation();
 
   // Dados mockados
   const header = ["Nome", "E-mail", "Idade", "Administrador", "Perfil", ""];
+  console.log(header);
+  const familyId = await api.post('families/');
+  console.log(familyId);
   const users = [
     { id: '1', name: 'Beatriz Silva', email: 'beatriz@email.com', age: 35, admin: true, profile: "Mãe"},
     { id: '2', name: 'Pedro Silva', email: 'pedro@email.com', age: 37, admin: true, profile: "Pai"},
@@ -41,7 +45,7 @@ const FamilyGroupScreen = () => {
   ) 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.container}>
       
       <View style={styles.header}>
         <View style={styles.logoContainer}>
@@ -127,7 +131,7 @@ const FamilyGroupScreen = () => {
         </TouchableOpacity>
       </View>
       
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -146,13 +150,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#D9D9D9',
     padding: 20,
+    height: 'auto',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 30,
-    height: '40%'
+    height: 'auto',
   },
   logoContainer: {
     flex: 1,
