@@ -1,4 +1,3 @@
-// Alert.web.ts
 import { AlertButton, AlertStatic } from 'react-native';
 
 class WebAlert implements Pick<AlertStatic, 'alert'> {

@@ -14,10 +14,3 @@ async def start_db_client(app):
     
 async def close_db_client(app):
     app.db_client.close()
-
-# mongodb = MongoDB()
-
-# async def get_db():
-#     if not mongodb.db:
-#         await mongodb.connect()
-#     return mongodb.db

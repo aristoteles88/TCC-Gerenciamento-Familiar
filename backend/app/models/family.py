@@ -6,8 +6,8 @@ from typing import List
 
 class FamilyBase(BaseDBModel):
     name: str
-    members: List[str] = Field(default_factory=list)  # List of user IDs
-
+    members: List[str] = Field(default_factory=list)
+    
 class FamilyCreate(FamilyBase):
     pass
 

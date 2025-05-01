@@ -12,7 +12,7 @@ const firebaseConfig = {
     appId: "1:343002635950:web:3f6428c860026a45ca573f"
 };
 
-// Initialize Firebase
+// Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
@@ -21,7 +21,7 @@ const handleGoogleLogin = async (navigation) => {
   try {
     let token = await getToken();
     if (token === null) {
-      // Sign in with Google
+      // Autentica com Google
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       token = await result.user.getIdToken();
@@ -37,7 +37,7 @@ const handleEmailAndPasswordLogin = async (email: string, password: string, navi
   try {
     let token = await getToken();
     if (token === null) {
-      // Sign in with email and password
+      // Autentica com email e senha
       const result = await signInWithEmailAndPassword(auth, email, password);
       token = await result.user.getIdToken();
       await storeToken(token);
@@ -56,7 +56,7 @@ const handleEmailAndPasswordLogin = async (email: string, password: string, navi
 
 const registerUser = async (email: string, password: string, fullName: string, navigation) => {
   try {
-    // Create user with email and password
+    // Cria usuário com email e senha
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const token = await result.user.getIdToken();
     await storeToken(token);
@@ -80,7 +80,7 @@ const registerUser = async (email: string, password: string, fullName: string, n
 
 const sendTokenToBackend = async (endpoint: string, body, navigation) => {
   try {
-    // Send token to your backend
+    // Envia o token para o backend
     if (body !== null) {
       body = {};
     }
@@ -99,10 +99,11 @@ const sendTokenToBackend = async (endpoint: string, body, navigation) => {
 const logout = async () => {
   try {
     await signOut(auth);
-    return true; // Success
+    await removeToken();
+    return true;
   } catch (error) {
     console.error('Logout error:', error);
-    return false; // Failed
+    return false;
   }
 };
 

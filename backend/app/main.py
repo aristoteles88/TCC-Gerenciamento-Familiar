@@ -8,19 +8,13 @@ from app.routes import auth_router, family_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Application starting...")
-    print("Connecting to MongoDB...")
     await start_db_client(app)
-    print("Connected to MongoDB.")
     yield
-    print("Disconnecting from MongoDB...")
     await close_db_client(app)
-    print("Disconnected from MongoDB.")
-    print("Application shutting down...")
 
 app = FastAPI(lifespan=lifespan)
 
-# CORS Setup
+# Configuração CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -29,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
+# Inclui routers
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(family_router, prefix="/family", tags=["family"])
 
