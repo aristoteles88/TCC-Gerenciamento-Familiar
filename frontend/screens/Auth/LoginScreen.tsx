@@ -1,30 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { Alert } from '@/components/Alert';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { useAuth } from '../../services/auth/AuthContext';
 
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const { login, loading } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { userAuth, login, loading } = useAuth();
 
-    const webClientId = "343002635950-2qjmdgaml08o5pbao3uf645fum6vq4lr.apps.googleusercontent.com"; 
+  const webClientId = "343002635950-2qjmdgaml08o5pbao3uf645fum6vq4lr.apps.googleusercontent.com"; 
 
-    useEffect(()=>{
-        GoogleSignin.configure({
-            webClientId: webClientId,
-        })
-    },[])
+  useEffect(()=>{
+      GoogleSignin.configure({
+          webClientId: webClientId,
+      })
+  },[])
 
-    const handleLogin = async (type, email, password, navigation) => {
-        try {
-            await login(type, email, password, navigation);
-        } catch (error: any) {
-            Alert.alert('Erro ao fazer o login: ', error.message);
-        }
-    };
+  const handleLogin = async (type, email, password) => {
+      try {
+          await login(type, email, password);
+      } catch (error: any) {
+          Alert.alert('Erro ao fazer o login: ', error.message);
+      }
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -66,14 +74,14 @@ const LoginScreen = ({navigation}) => {
 
             <TouchableOpacity 
                 style={styles.loginButton}
-                onPress={() => handleLogin('email', email, password, navigation)}
+                onPress={() => handleLogin('email', email, password)}
             >
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity 
-            onPress={() => handleLogin('google', email, password, navigation)}
+            onPress={() => handleLogin('google', email, password)}
           >
               <Image
                   source={require('@/assets/images/web_light_sq_SI1x.png')}

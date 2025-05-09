@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.mongodb import start_db_client, close_db_client
-from app.routes import auth_router, family_router
+from app.routes import auth_router, family_router, user_router
 # , tasks, rewards, families, users
 
 
@@ -25,7 +25,8 @@ app.add_middleware(
 
 # Inclui routers
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
-app.include_router(family_router, prefix="/family", tags=["family"])
+app.include_router(family_router, prefix="/families", tags=["families"])
+app.include_router(user_router, prefix="/users", tags=["users"])
 
 @app.get("/")
 def read_root():

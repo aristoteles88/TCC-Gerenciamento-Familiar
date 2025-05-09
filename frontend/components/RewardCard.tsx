@@ -123,6 +123,3 @@ const styles = StyleSheet.create({
 });
 
 export { UserCard, RewardCard };
-
-// Example usage:
-// <RewardCard title="Movie Night" points={150} isClaimed={false} />

@@ -1,28 +1,87 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, ScrollView, ActivityIndicator, Button } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import api from '@/api/client';
+import getUserData from '@/hooks/getUserData';
+import { auth } from '@/firebase';
+import { Family } from '@/services/auth/types';
 
 
 
-const FamilyGroupScreen = async () => {
+const FamilyGroupScreen = () => {
   const [familyName, setFamilyName] = useState('')
-  const [showIcon, setShowIcon] = useState(true)
+  const [userLoaded, setUserLoaded] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
+  // const [showIcon, setShowIcon] = useState(true);
   const navigation = useNavigation();
+  const { user, loading, error } = getUserData();
+  const [users, setUsers] = useState([]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  } else {
+    if (!userLoaded) {
+      setUsers([user]);
+      setUserLoaded(true);
+    }
+  }
+
+  if (error) {
+    console.log('Error: ', error);
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Error: {error}</Text>
+        <Button title="Retry" onPress={() => navigation.replace('Login')} />
+      </View>
+    );
+  }
+
+  const onSaveFamily = async () => {
+    try {
+      const familyId = user ? user.family_id : null;
+      const familyMembers = users ? users?.map((user) => user?.uid) : [''];
+      const newFamily = {uid: familyId, name: familyName, members: familyMembers};
+      if (familyId === null) {
+        console.log('Criando nova família...');
+        console.log('Dados da nova família: ', newFamily);
+        const resp = await api.post("/families", newFamily);
+        if (resp.status === 201) {
+          await api.put(`/users/${user?.uid}`, { family_id: resp.data._id });
+          console.log('Usuário adicionado à família com sucesso!');
+        }
+      } else {
+        const resp = await api.put(`/families/${familyId}`, newFamily);
+        if (resp.status === 200) {
+          console.log('Família atualizada com sucesso!');
+          await api.put(`/users/${user?.uid}`, { family_id: resp.data.uid });
+          console.log('Usuário atualizado com sucesso!');
+        }
+      }
+      navigation.navigate('Home');
+    } catch (err) {
+      console.log('Erro ao criar/atualizar família: ', err);
+      // alert('Erro ao criar/atualizar família: ', err);
+    }
+  };
+  
 
   // Dados mockados
   const header = ["Nome", "E-mail", "Idade", "Administrador", "Perfil", ""];
-  console.log(header);
-  const familyId = await api.post('families/');
-  console.log(familyId);
-  const users = [
-    { id: '1', name: 'Beatriz Silva', email: 'beatriz@email.com', age: 35, admin: true, profile: "Mãe"},
-    { id: '2', name: 'Pedro Silva', email: 'pedro@email.com', age: 37, admin: true, profile: "Pai"},
-    { id: '3', name: 'Bruno Silva', email: 'bruno@email.com', age: 14, admin: false, profile: "Filho"},
-    { id: '4', name: 'Amanda Silva', email: 'amanda@email.com', age: 9, admin: false, profile: "Filha"},
-  ];
+  // const familyId = await api.post('families/', {});
+  // console.log(familyId);
+  // const users = [
+  //   { id: '1', name: 'Beatriz Silva', email: 'beatriz@email.com', age: 35, admin: true, profile: "Mãe"},
+  //   { id: '2', name: 'Pedro Silva', email: 'pedro@email.com', age: 37, admin: true, profile: "Pai"},
+  //   { id: '3', name: 'Bruno Silva', email: 'bruno@email.com', age: 14, admin: false, profile: "Filho"},
+  //   { id: '4', name: 'Amanda Silva', email: 'amanda@email.com', age: 9, admin: false, profile: "Filha"},
+  // ];
+  // console.log(users);
 
   const tableHeader = () => (
     <View style={styles.headerRow}>
@@ -43,6 +102,9 @@ const FamilyGroupScreen = async () => {
       </TouchableOpacity>
     </View>
   ) 
+
+  // console.log(users);
+
 
   return (
     <ScrollView style={styles.container}>
@@ -72,8 +134,6 @@ const FamilyGroupScreen = async () => {
         <Divider width={1} color="#A9A9A9" />
       </View>
 
-      
-      
       <View style={styles.table}>
         <FlatList
           data={users}
@@ -84,7 +144,7 @@ const FamilyGroupScreen = async () => {
             <View style={styles.userItem}>
               <View style={styles.nameContainer}>
                 <Image 
-                  source={getAvatar(item.id)} 
+                  source={item.avatar ? { uri: item.avatar } : getAvatar(item.id)}
                   style={styles.userAvatar}
                 />
                 <Text style={styles.listItemText}>{item.name}</Text>
@@ -97,7 +157,7 @@ const FamilyGroupScreen = async () => {
               </View>
               <View style={styles.adminContainer}>
                 {
-                  item.admin ? <Ionicons name="checkmark" style={styles.icon}/> : ''
+                  item.is_admin ? <Ionicons name="checkmark" style={styles.icon}/> : ''
                 }
               </View>
               <View style={styles.profileContainer}>
@@ -114,18 +174,20 @@ const FamilyGroupScreen = async () => {
             </View>
           )}
         />
-        
-      </View>
+      </View> 
 
       <Divider width={1} color="#A9A9A9" />
 
       <View style={styles.footerButtons}>
-        <TouchableOpacity style={styles.buttonBorder}>
+        <TouchableOpacity 
+          style={styles.buttonBorder}
+          onPress={() => navigation.navigate('Login')}
+        >
           <Text style={[styles.buttonText, styles.cancelButtonText]}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.buttonBorder}
-          onPress={() => navigation.navigate('Home')}
+          onPress={ async () => await onSaveFamily() }
         >
           <Text style={[styles.buttonText, styles.saveButtonText]}>Salvar</Text>
         </TouchableOpacity>

@@ -6,4 +6,5 @@ class FamilyCreate(BaseModel):
 
 class FamilyOut(FamilyCreate):
     id: str
+    members: list[str]
     created_at: datetime

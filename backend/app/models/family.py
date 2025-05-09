@@ -12,10 +12,9 @@ class FamilyCreate(FamilyBase):
     pass
 
 class FamilyOut(FamilyBase):
-    id: str = Field(alias="_id")
     created_at: datetime
     updated_at: datetime
 
     class Config:
         allow_population_by_field_name = True
-        json_encoders = {ObjectId: str}
+        

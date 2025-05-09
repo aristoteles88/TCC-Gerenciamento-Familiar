@@ -2,22 +2,16 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailA
 import { initializeApp } from "firebase/app";
 import api from "./api/client";
 import { getToken, removeToken, storeToken } from "./services/auth/authService";
+import firebaseConfig from "./firebase_data";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAiCg0VDUATwz0dKKsFhS0GrYpYqyVHQrc",
-    authDomain: "family-task-manager-51606.firebaseapp.com",
-    projectId: "family-task-manager-51606",
-    storageBucket: "family-task-manager-51606.firebasestorage.app",
-    messagingSenderId: "343002635950",
-    appId: "1:343002635950:web:3f6428c860026a45ca573f"
-};
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 
-const handleGoogleLogin = async (navigation) => {
+
+const handleGoogleLogin = async () => {
   try {
     let token = await getToken();
     if (token === null) {
@@ -27,13 +21,14 @@ const handleGoogleLogin = async (navigation) => {
       token = await result.user.getIdToken();
       await storeToken(token);
     }
-    sendTokenToBackend('login', null ,navigation);
+    return sendTokenToBackend('login', null);
+    
   } catch (error) {
     alert('Login error: ' + error.message);
   }
 };
 
-const handleEmailAndPasswordLogin = async (email: string, password: string, navigation) => {
+const handleEmailAndPasswordLogin = async (email: string, password: string) => {
   try {
     let token = await getToken();
     if (token === null) {
@@ -42,7 +37,7 @@ const handleEmailAndPasswordLogin = async (email: string, password: string, navi
       token = await result.user.getIdToken();
       await storeToken(token);
     }
-    sendTokenToBackend('login', token, null, navigation);
+    return sendTokenToBackend('login', token, null);
   } catch (error) {
     if (error.code === 'auth/user-not-found') {
       alert('User not found');
@@ -54,13 +49,13 @@ const handleEmailAndPasswordLogin = async (email: string, password: string, navi
   }
 };
 
-const registerUser = async (email: string, password: string, fullName: string, navigation) => {
+const registerUser = async (email: string, password: string, fullName: string) => {
   try {
     // Cria usuário com email e senha
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const token = await result.user.getIdToken();
     await storeToken(token);
-    sendTokenToBackend('register', token, {"name": fullName}, navigation);
+    return sendTokenToBackend('register', {"name": fullName});
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
       alert('Email already in use');
@@ -78,21 +73,20 @@ const registerUser = async (email: string, password: string, fullName: string, n
   }
 }
 
-const sendTokenToBackend = async (endpoint: string, body, navigation) => {
+const sendTokenToBackend = async (endpoint: string, body) => {
   try {
     // Envia o token para o backend
-    if (body !== null) {
+    if (body === null) {
       body = {};
     }
-    const response = await api.post('auth/' + endpoint);
-    const userData = await response.data;
-    if (userData['family_id'] === null) {
-      navigation.navigate('FamilyGroup');
-    } else {
-      navigation.navigate('Home');
+    const response = await api.post('auth/' + endpoint, body);
+    if (response.status === 200) {
+      return response.data;
     }
+    return null;
   } catch (error) {
     alert('Error sending token to backend: ' + error.message);
+    return null;
   }
 }
 
