@@ -4,13 +4,13 @@
 Um sistema full-stack para gerenciamento de tarefas e recompensas familiares, desenvolvido com React Native (Web), FastAPI (backend) e MongoDB.
 Este projeto foi desenvolvido como Trabalho de Conclusão de Curso para a Pós-graduação em Desenvolvimento Web FullStack da PUC-RS.
 
-## 📋 Table of Contents
+## 📋 Índice
 - [Funcionalidades](#-funcionalidades)
-- [Tecnologias](#-tecnologias)
+- [Tecnologias](#️--tecnologias)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Instalação](#-instalação)
-- [Rotas Principais (API)](#-rotas-principais-(api))
-- [Contato](#-contato)
+- [Rotas Principais (API)](#-rotas-principais-api)
+- [Contato](#️-contato))
 
 ## 🚀 Funcionalidades
 
@@ -20,7 +20,7 @@ Este projeto foi desenvolvido como Trabalho de Conclusão de Curso para a Pós-g
 - Grupos familiares com múltiplos membros
 - Dashboard intuitivo com progresso visual
 
-## 🛠️ Tecnologias
+## 🛠️  Tecnologias
 
 ### Frontend (Web)
 
@@ -135,6 +135,6 @@ npm run web
 
 ## ✉️ Contato
 
-Desenvolvedor: Aristóteles Soares Benício Júnior
-Email: aristoteles88@gmail.com
-LinkedIn: 
+- Desenvolvedor: Aristóteles Soares Benício Júnior
+- Email: aristoteles88@gmail.com
+- LinkedIn: http://www.linkedin.com/in/aristoteles-benicio-jr
