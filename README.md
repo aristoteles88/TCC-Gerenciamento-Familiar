@@ -5,7 +5,9 @@ Um sistema full-stack para gerenciamento de tarefas e recompensas familiares, de
 Este projeto foi desenvolvido como Trabalho de Conclusão de Curso para a Pós-graduação em Desenvolvimento Web FullStack da PUC-RS.
 
 ## 📋 Índice
+## 📋 Índice
 - [Funcionalidades](#-funcionalidades)
+- [Tecnologias](#️--tecnologias)
 - [Tecnologias](#️--tecnologias)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Instalação](#-instalação)
