@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, ScrollView, ActivityIndicator, Button } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import api from '@/api/client';
 import getUserData from '@/hooks/getUserData';
-import { auth } from '@/firebase';
-import { Family } from '@/services/auth/types';
 
 
 

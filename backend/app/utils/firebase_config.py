@@ -1,10 +1,14 @@
+import os
+from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, auth
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 # Acessa firebase com conta de servico.
-cred = credentials.Certificate('./config/family-task-manager-firebase-config.json')
+load_dotenv()
+FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")
+cred = credentials.Certificate(FIREBASE_CREDENTIALS)
 firebase_admin.initialize_app(cred)
 
 security = HTTPBearer()

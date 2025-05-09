@@ -29,28 +29,12 @@ async def create_user_from_firebase (request: Request, user: UserBase) -> UserOu
         raise HTTPException(500, "Falha ao criar o usuário")
     return UserOut(**created_user)
     
-async def update_user_data(request: Request, user, email, name, avatar):
+async def update_user(request: Request, user: UserBase, body: dict):
     db = request.app.db
     users = db.users
     user_dict = user.model_dump(by_alias=True)
-    user_dict.update({
-        "email": email,
-        "name": name,
-        "avatar": avatar,
-        "updated_at": datetime.now()
-    })
-    result_user = await users.update_one({"_id": user_dict["_id"]}, {"$set": user_dict})
-    if not result_user.acknowledged:
-        raise HTTPException(500, "Falha ao atualizar o usuário")
-    
-async def update_user_family_id(request: Request, user, family_id: str):
-    db = request.app.db
-    users = db.users
-    user_dict = user.model_dump(by_alias=True)
-    user_dict.update({
-        "family_id": family_id,
-        "updated_at": datetime.now()
-    })
+    body["updated_at"] = datetime.now()
+    user_dict.update(body)
     result_user = await users.update_one({"_id": user_dict["_id"]}, {"$set": user_dict})
     if not result_user.acknowledged:
         raise HTTPException(500, "Falha ao atualizar o usuário")

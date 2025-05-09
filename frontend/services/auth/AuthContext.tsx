@@ -28,8 +28,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       navigation.navigate('Login');
       return;
     }
-    console.log('user', user);
-    console.log('user.family_id', user?.family_id);
     if (!user?.family_id) {
       navigation.navigate('FamilyGroup');
 

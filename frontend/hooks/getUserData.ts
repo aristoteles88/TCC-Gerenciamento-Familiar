@@ -19,7 +19,7 @@ export default function getUserData() {
           setUser(resp_obj);
         };
       } catch (err) {
-        setError(err.message || 'Failed to load user data');
+        setError(err.message || 'Falho ao buscar dados do usuário');
       } finally {
         setLoading(false);
       }

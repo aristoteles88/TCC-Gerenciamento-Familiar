@@ -2,8 +2,7 @@ import json
 from bson import ObjectId
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import HTTPBearer
-from app.crud.user import get_user_by_uid, create_user_from_firebase, get_user_by_uid, update_user_data
-from app.schemas import UserOut
+from app.crud.user import get_user_by_uid, create_user_from_firebase, get_user_by_uid, update_user
 from app.models import UserInDB, UserBase, UserOut
 from app.utils.firebase_config import get_current_user
 
@@ -16,9 +15,10 @@ async def login_with_firebase(request: Request, credentials: HTTPBearer = Depend
         # Verifica token Firebase
         decoded_token = await get_current_user(credentials.credentials)
         uid = decoded_token.get('uid')
-        email = decoded_token.get('email')
-        name = decoded_token.get('name', "New User")
-        avatar = decoded_token.get('picture', None)
+        body = {}
+        body['email'] = decoded_token.get('email')
+        body['name'] = decoded_token.get('name', "Novo Usuário")
+        body['avatar'] = decoded_token.get('picture', None)
         # Verifica se o usuário já existe
         user = await get_user_by_uid(request, uid)
         if not user:
@@ -27,9 +27,9 @@ async def login_with_firebase(request: Request, credentials: HTTPBearer = Depend
             # Cria um novo usuário
             user_data = UserBase(
                 uid = uid,
-                email=email,
-                name=name,
-                avatar=avatar,
+                email=body.get('email'),
+                name=body.get('name'),
+                avatar=body.get('avatar'),
                 is_admin=True
             )
                 
@@ -37,7 +37,7 @@ async def login_with_firebase(request: Request, credentials: HTTPBearer = Depend
             user = await create_user_from_firebase(request, user_data)
         else:
             # Atualiza os dados do usuário se necessário
-            await update_user_data(request, user, email, name, avatar)
+            await update_user(request, user, body)
         
         return user
     except Exception as e:
@@ -59,16 +59,15 @@ async def register(request: Request, credentials: HTTPBearer = Depends(security)
         else:
             # Cria um novo usuário de autenticação
             auth_user = await create_user_from_firebase(request, auth_user)
-            email = decoded_token.get('email')
             body = json.loads(str(await request.body(), encoding='utf-8'))
-            name = body['name']
-            avatar = decoded_token.get('picture', None)
+            body['email'] = decoded_token.get('email')
+            body['avatar'] = decoded_token.get('picture', None)
             # Cria um novo usuário
             user_data = UserBase(
                 uid=uid,
-                email=email,
-                name=name,
-                avatar=avatar,
+                email=body['email'],
+                name=body['name'],
+                avatar=body['avatar'],
                 is_admin=True,
             )
             user = await create_user_from_firebase(request, user_data)
